@@ -1,0 +1,15 @@
+version = 1
+
+[[analyzers]]
+name = "python"
+enabled = true
+
+[analyzers.meta]
+runtime_version = "3.8"
+
+[analyzers.python.exclude]
+paths = ["tests/", "data/"]
+
+[[analyzers]]
+name = "javascript"
+enabled = true

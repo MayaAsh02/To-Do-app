@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.flaskapp.name }}-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.flaskapp.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.flaskapp.name }}
+    spec:
+      containers:
+        - name: {{ .Values.flaskapp.name }}
+          image: {{ .Values.flaskapp.image.registry }}/{{ .Values.flaskapp.image.repository }}:{{ .Values.flaskapp.image.tag }}
+          ports:
+            - containerPort: {{ .Values.flaskapp.service.port }}
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: atlas-connection-string
+          imagePullPolicy: {{ .Values.flaskapp.imagePullPolicy }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.flaskapp.name }}-service
+spec:
+  selector:
+    app: {{ .Values.flaskapp.name }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: {{ .Values.flaskapp.service.port }}
+  type: {{ .Values.flaskapp.service.type }}

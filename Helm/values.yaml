@@ -1,0 +1,46 @@
+nameOverride: ""
+
+mongo:
+  name: mongo
+  image:
+    registry: docker.io
+    repository: mvertes/alpine-mongo
+    tag: latest
+  imagePullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 27017
+  statefulset:
+    replicas: 1
+    resources:
+      requests:
+        storage: 20Gi
+  volumeClaimTemplates:
+    - name: mongodb-data
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 20Gi
+
+flaskapp:
+  name: todo-flaskapp
+  env: production
+  image:
+    name: flaskapp
+    registry: docker.io
+    repository: mayaashkinazi/todo-flaskapp
+    tag: latest
+  imagePullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5000
+
+ingress:
+  host: todo-app.local
+
+secrets:
+  - name: mongo-atlas-secret
+    type: Opaque
+    data:
+      atlas-connection-string: bW9uZ29kYitzcnY6Ly9NYXlhOlV6aWd5aTlmT1dxa2lvMmdAY2x1c3RlcjAuajlzbW8xdy5tb25nb2RiLm5ldC8=

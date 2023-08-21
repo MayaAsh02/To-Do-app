@@ -1,0 +1,3 @@
+Terraform/.terraform/
+Terraform/.terraform/providers/registry.terraform.io/hashicorp/helm/
+Terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/
