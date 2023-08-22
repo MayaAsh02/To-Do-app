@@ -1,0 +1,38 @@
+name: docker test
+
+on:
+    push:
+      branches:
+        - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        env:  # Set the environment variable with your MongoDB Atlas URI
+            ATLAS_CONNECTION_STRING: ${{ secrets.ATLAS_CONNECTION_STRING }}
+
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+  
+        - name: Set up Docker
+          uses: docker/setup-docker@v2
+          with:
+            docker-host: tcp://localhost:2375  # Connect to the Docker daemon
+  
+        - name: Log in to Docker Hub
+          run: |
+           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+  
+        - name: Build Docker images
+          run: |
+           docker-compose build
+  
+        - name: Run tests with Docker Compose
+          run: |
+           docker-compose up -d  # Start services in detached mode
+           sleep 10  # Allow some time for services to start
+           docker-compose run app sh -c "python -m unittest discover tests"
+
+        
