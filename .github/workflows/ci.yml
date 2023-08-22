@@ -31,8 +31,10 @@ jobs:
     - name: Run tests
       run: python3 -m unittest discover tests
   
-    - name: Deploy Flask App
-      run: python3 server/app.py
+    - name: Deploy Flask App in Background
+      run: |
+        nohup python3 server/app.py &
+        sleep 5  # Allow some time for the app to start
 
       
     - name: Trigger Shutdown and Get Response
