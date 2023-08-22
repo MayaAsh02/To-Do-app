@@ -15,12 +15,11 @@ RUN python3.10 -m pip install "pymongo[srv]"
 # Add a non-root user "appuser"
 RUN adduser -D appuser
 
-# Copy the .env file into the container
-COPY --chown=appuser:appuser ./server/.env .env
-
 # Set the working directory and user in the container
 USER appuser
 WORKDIR /home/appuser
+
+COPY --chown=appuser:appuser ./server/.env /home/appuser/.env
 
 # Add the user's local binary path to the PATH environment variable
 ENV PATH="/home/appuser/.local/bin:${PATH}"
