@@ -41,7 +41,7 @@ jobs:
             context: ./server
             dockerfile: ./server/Dockerfile
             push: true
-            tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/todo-flaskapp:${{ github.sha }}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo-flaskapp:${{ github.sha }}
 
 
         
