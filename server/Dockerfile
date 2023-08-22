@@ -16,7 +16,7 @@ RUN python3.10 -m pip install "pymongo[srv]"
 RUN adduser -D appuser
 
 # Copy the .env file into the container
-COPY --chown=appuser:appuser .env .env
+COPY --chown=appuser:appuser ./server/.env .env
 
 # Set the working directory and user in the container
 USER appuser
