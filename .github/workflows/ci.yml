@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:  # Set the environment variable with your MongoDB Atlas URI
+     MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
