@@ -2,8 +2,9 @@ version: "3.8"
 
 services:
   todo-flaskapp:
-    image: mayaashkinazi/todo-flaskapp:${DOCKER_TAG:-latest}
-      - 5000:5000
+    image: mayaashkinazi/todo-flaskapp:latest
+    ports:
+      - "5000:5000"
     container_name: flask-app
     environment:
       - FLASK_ENV=development
@@ -12,12 +13,14 @@ services:
       - MONGO_PORT=27017
     depends_on:
       - mongo
+  
+  
   mongo:
     image: mvertes/alpine-mongo:latest
     volumes:
      - flaskapp:/data/db/
     ports:
-      - 27017:27017
+      - "27017:27017"
 
 volumes:
   flaskapp:
