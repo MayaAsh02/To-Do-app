@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:  # Set the environment variable with your MongoDB Atlas URI
-     ATLAS_CONNECTION_STRING: ${{ secrets.ATLAS_CONNECTION_STRING }}
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -20,6 +17,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
+
+    - name: Set environment variable
+      run: echo "ATLAS_CONNECTION_STRING=${{ secrets.ATLAS_CONNECTION_STRING }}" >> $GITHUB_ENV
+  
 
     - name: Install dependencies
       run: |
