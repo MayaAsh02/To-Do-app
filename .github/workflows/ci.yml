@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:  # Set the environment variable with your MongoDB Atlas URI
-     MONGODB_URI: ${{ secrets.MONGODB_URI }}
+     ATLAS_CONNECTION_STRING: ${{ secrets.ATLAS_CONNECTION_STRING }}
 
     steps:
     - name: Checkout repository
