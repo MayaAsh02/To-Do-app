@@ -33,3 +33,9 @@ jobs:
   
     - name: Deploy Flask App
       run: python3 server/app.py
+
+      
+    - name: Trigger Shutdown and Get Response
+      run: |
+       RESPONSE=$(curl -s -X POST http://127.0.0.1:5000/shutdown)
+       echo "$RESPONSE"
