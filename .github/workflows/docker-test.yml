@@ -11,6 +11,14 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+
+
+      - name: Set up environment
+        run: |
+          # Load the .env file
+          source server/.env
+          # Set environment variables from the .env file
+          export ATLAS_CONNECTION_STRING="$ATLAS_CONNECTION_STRING"
         
       - name: Run Local Test
         run: |
