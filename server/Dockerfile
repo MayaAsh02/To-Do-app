@@ -19,7 +19,7 @@ RUN adduser -D appuser
 USER appuser
 WORKDIR /home/appuser
 
-COPY --chown=appuser:appuser .env .env
+COPY --chown=appuser:appuser /server/.env .env
 
 # Add the user's local binary path to the PATH environment variable
 ENV PATH="/home/appuser/.local/bin:${PATH}"
