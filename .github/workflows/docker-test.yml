@@ -13,10 +13,8 @@ jobs:
         uses: actions/checkout@v2
 
 
-      - name: Set up environment
-        run: |
-         # Set environment variables from repository secrets
-         export ATLAS_CONNECTION_STRING="${{ secrets.ATLAS_CONNECTION_STRING }}"
+      - name: Load environment variables from .env
+        run: python3 -m pip install python-dotenv && python3 -c "import dotenv; dotenv.load_dotenv()"
         
       - name: Run Local Test
         run: |
