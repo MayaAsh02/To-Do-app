@@ -16,7 +16,7 @@ spec:
         - name: {{ .Values.flaskapp.name }}
           image: {{ .Values.flaskapp.image.registry }}/{{ .Values.flaskapp.image.repository }}:{{ .Values.flaskapp.image.tag }}
           ports:
-            - containerPort: {{ .Values.flaskapp.service.port }}
+            - containerPort: 5000
           env:
             - name: MONGO_URI
               valueFrom:
@@ -36,6 +36,6 @@ spec:
     app: {{ .Values.flaskapp.name }}
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: {{ .Values.flaskapp.service.port }}
+      port: {{ .Values.flaskapp.service.port }}
+      targetPort: {{ .Values.flaskapp.service.targetport }}
   type: {{ .Values.flaskapp.service.type }}

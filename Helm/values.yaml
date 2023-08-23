@@ -16,15 +16,15 @@ mongo:
       requests:
         storage: 20Gi
   volumeClaimTemplates:
-    - name: mongodb-data
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: standard
-      resources:
+     name: mongodb-data
+     accessModes: [ "ReadWriteOnce" ]
+     storageClassName: standard
+     resources:
         requests:
           storage: 20Gi
 
 flaskapp:
-  name: todo-flaskapp
+  name: flaskapp
   env: production
   image:
     name: flaskapp
@@ -33,14 +33,25 @@ flaskapp:
     tag: latest
   imagePullPolicy: Always
   service:
-    type: ClusterIP
-    port: 5000
+    port: 80
+    targetPort: 5000
+    type: LoadBalancer
 
 ingress:
   host: todo-app.local
 
 secrets:
-  - name: mongo-atlas-secret
+    name: mongo-atlas-secret
     type: Opaque
     data:
-      atlas-connection-string: bW9uZ29kYitzcnY6Ly9NYXlhOlV6aWd5aTlmT1dxa2lvMmdAY2x1c3RlcjAuajlzbW8xdy5tb25nb2RiLm5ldC8=
+      atlas-connection-string: files/.env
+
+configMaps:
+    name: metallb-config
+    data:
+      config: |
+        address-pools:
+        - name: default
+          protocol: layer2
+          addresses:
+          - 192.168.99.200-192.168.99.220

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.mongo.Name }}-statefulset
+spec:
+  replicas: {{ .Values.mongo.statefulset.replicas }}
+  selector:
+    matchLabels:
+      app: mongodb
+  serviceName: {{ .Release.Name }}-mongodb-headless
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: {{ .Values.mongo.image.registry }}/{{ .Values.mongo.image.repository }}:{{ .Values.mongo.image.tag }}
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+      volumeClaimTemplates:
+        - metadata:
+            name: mongodb-data
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            storageClassName: {{ .Values.mongo.volumeClaimTemplates.storageClassName }}
+            resources:
+              requests:
+                storage: {{ .Values.mongo.volumeClaimTemplates.resources.requests.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.mongo.Name }}-headless
+spec:
+  clusterIP: None
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: {{ .Values.mongo.service.port }}
