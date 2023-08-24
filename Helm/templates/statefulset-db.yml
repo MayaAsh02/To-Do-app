@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.mongo.Name }}-statefulset
+  name: {{ .Values.mongo.name }}-statefulset
 spec:
   replicas: {{ .Values.mongo.statefulset.replicas }}
   selector:
     matchLabels:
       app: mongodb
-  serviceName: {{ .Release.Name }}-mongodb-headless
+  serviceName: {{ .Values.mongo.name }}-mongodb-headless
   template:
     metadata:
       labels:
@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.mongo.Name }}-headless
+  name: {{ .Values.mongo.name }}-headless
 spec:
   clusterIP: None
   selector:

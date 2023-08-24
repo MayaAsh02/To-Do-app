@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.mongo.Name }}-deployment
+  name: {{ .Values.mongo.name }}-deployment
 spec:
   replicas: {{ .Values.mongo.statefulset.replicas }}
   selector:
@@ -22,7 +22,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.mongo.Name }}-mongodb-service
+  name: {{ .Values.mongo.name }}-mongodb-service
 spec:
   selector:
     app: mongodb
