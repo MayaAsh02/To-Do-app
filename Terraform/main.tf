@@ -19,6 +19,8 @@ module "vpc" {
 
   enable_nat_gateway = true
   enable_vpn_gateway = false
+  enable_dns_hostnames = true
+  enable_dns_support   = true
   single_nat_gateway = true
 
   public_subnet_tags = {
@@ -289,3 +291,58 @@ resource "aws_security_group" "remote_access" {
 
   tags = merge(local.tags, { Name = "${local.name}-remote" })
 }
+
+provider "aws" {
+  region = local.region  # Update with your desired AWS region
+}
+
+resource "aws_route53_zone" "example_com_zone" {
+  name = "example.com"
+}
+
+resource "aws_route53_record" "argocd_record" {
+  zone_id = aws_route53_zone.example_com_zone.zone_id
+  name    = "argocd"
+  type    = "CNAME"
+  ttl     = "300"  # TTL value in seconds
+
+  records = local.name  # Replace with your EKS cluster's domain name
+}
+
+
+//install argocd on the cluster
+resource "helm_release" "argocd" {
+  name       = "argocd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  namespace  = "argocd"
+  create_namespace = true
+}
+
+
+
+resource "argocd_application" "my_webapp" {
+  metadata {
+    name      = "my-webapp"
+    namespace = "argocd"
+  }
+
+  spec {
+    project = "default"
+
+    source {
+      repo_url        = "https://github.com/MayaAsh02/To-Do-app.git"
+      target_revision = "HEAD"
+      path            = "Helm"
+      helm {
+        value_files = ["values.yaml"]
+      }
+    }
+
+    destination {
+      server    = "https://kubernetes.default.svc"
+      namespace = "default"
+    }
+  }
+}
+

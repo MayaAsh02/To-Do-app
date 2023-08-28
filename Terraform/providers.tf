@@ -8,10 +8,23 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.22"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
     helm = {
       source  = "hashicorp/helm"
       version = "~> 2.10"
     }
+    argocd = {
+      source = "oboukili/argocd"
+      version = ">= 6"
+    }
+    utils = {
+      source  = "cloudposse/utils"
+      version = ">= 0.14.0"
+    }
+
   }
 }
 
@@ -36,6 +49,13 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
+}
+
+provider "argocd" {
+  server_addr = "argocd.example.com:443"
+  username    = "username"
+  password    = "password"
+  grpc_web    = true
 }
 
 data "aws_eks_cluster" "cluster" {

@@ -13,15 +13,6 @@ variable "vpc_cidr" {
   type    = string
 }
 
-variable "aws_access_key" {
-  description = "aws access key"
-  sensitive = true
-}
-
-variable "aws_secret_key" {
-  description = "aws secret access key"
-  sensitive = true
-}
 
 variable "num_of_azs" {
   default = 3
