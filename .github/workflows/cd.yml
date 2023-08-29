@@ -25,7 +25,7 @@ jobs:
           ## Run your Terraform commands to create/update EKS cluster
           cd Terraform
           terraform init
-          terraform apply -lock=false
+          terraform apply -lock=false -var-file=terraform.tfvars
 
       - name: Install kubectl
         run: |
