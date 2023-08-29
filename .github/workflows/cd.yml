@@ -39,6 +39,10 @@ jobs:
           ##Configure kubectl to use the EKS cluster
           aws eks update-kubeconfig --name ToDo-app-dev-eks
 
+
+      - name: Create metallb-system namespace
+        run: kubectl create namespace metallb-system
+        
       - name: Deploy Helm Chart
         run: |
           ##Run Helm commands to deploy your app
