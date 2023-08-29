@@ -52,7 +52,7 @@ provider "helm" {
 }
 
 provider "argocd" {
-  server_addr = "argocd.example.com:443"
+  server_addr = "argocd:443"
   username    = "username"
   password    = "password"
   grpc_web    = true
