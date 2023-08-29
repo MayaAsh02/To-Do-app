@@ -20,12 +20,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Prepare .tfvars file
+        run: |
+          echo "mongo_uri=${{ secrets.MONGO_URI }}" > Terraform/terraform.tfvars
+  
       - name: Provision EKS cluster
         run: |
           ## Run your Terraform commands to create/update EKS cluster
           cd Terraform
           terraform init
-          terraform apply -lock=false -var-file=terraform.tfvars
+          terraform apply -lock=false
 
       - name: Install kubectl
         run: |
