@@ -10,7 +10,7 @@ jobs:
       
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
 
       - name: Load environment variables from .env
@@ -40,12 +40,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and Push Flask App Image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
-            context: ./server
-            dockerfile: ./server/Dockerfile
-            push: true
-            tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/todo-flaskapp:${{ github.sha }}
+          context: ./server
+          dockerfile: ./server/Dockerfile
+          push: true
+          tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/todo-flaskapp:${{ github.sha }}
 
 
         
