@@ -23,6 +23,7 @@ jobs:
       - name: Provision EKS cluster
         run: |
           ## Run your Terraform commands to create/update EKS cluster
+          cd Terraform
           terraform init
           terraform apply -auto-approve
 
