@@ -19,7 +19,7 @@ module "vpc" {
   intra_subnets   = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 10 + i)]
 
   enable_nat_gateway = true
-  enable_vpn_gateway = false
+  enable_vpn_gateway = true
   enable_dns_hostnames = true
   enable_dns_support   = true
   single_nat_gateway = true
@@ -71,7 +71,7 @@ module "eks" {
   }
 
   vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.public_subnets
+  subnet_ids               = module.vpc.private_subnets
   control_plane_subnet_ids = module.vpc.intra_subnets
 
   manage_aws_auth_configmap = true
