@@ -22,7 +22,7 @@ jobs:
 
       - name: Set KUBECONFIG
         run: |
-            echo "$HOME/.kube/config" >> $GITHUB_ENV        
+          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV        
   
       - name: Provision EKS cluster
         run: |
