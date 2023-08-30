@@ -18,18 +18,14 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Set KUBECONFIG
-        run: |
-          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV        
+          aws-region: us-east-1      
   
       - name: Provision EKS cluster
         run: |
           ## Run your Terraform commands to create/update EKS cluster
           cd Terraform
-          terraform init
-          yes| terraform apply -auto-approve -lock=false -var "mongo_uri=${{ secrets.ATLAS_CONNECTION_STRING }}"
+          terraform init -migrate-state
+          yes | terraform apply -auto-approve -lock=false -var "mongo_uri=${{ secrets.ATLAS_CONNECTION_STRING }}"
 
       - name: Install kubectl
         run: |
