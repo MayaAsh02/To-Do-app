@@ -24,7 +24,7 @@ jobs:
         run: |
           ## Run your Terraform commands to create/update EKS cluster
           cd Terraform
-          terraform init
+          terraform init -migrate-state
           yes | terraform apply -auto-approve -var "mongo_uri=${{ secrets.MONGO_URI }}"
 
       - name: Install kubectl
