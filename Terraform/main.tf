@@ -329,6 +329,4 @@ resource "helm_release" "argocd" {
     name  = "server.service.type"
     value = "LoadBalancer"
   }
-
-  reset_values = true
 }
