@@ -39,26 +39,6 @@ module "vpc" {
   }
 }
 
-resource "aws_internet_gateway" "my_igw" {
-  vpc_id = module.vpc.vpc_id
-}
-
-resource "aws_route_table" "public_rt" {
-  vpc_id = module.vpc.vpc_id
-
-  route {
-    cidr_block = "0.0.0.0/0"  # All IP addresses
-    gateway_id = aws_internet_gateway.my_igw.id
-  }
-}
-
-resource "aws_route_table_association" "public_subnet_associations" {
-  count          = length(module.vpc.public_subnets)
-  subnet_id      = module.vpc.public_subnets[count.index]
-  route_table_id = aws_route_table.public_rt.id
-}
-
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.16.0"
