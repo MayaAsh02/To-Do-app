@@ -25,7 +25,6 @@ jobs:
           ## Run your Terraform commands to create/update EKS cluster
           cd Terraform
           terraform init
-          terraform destroy -auto-approve -lock=false
           yes | terraform apply -auto-approve -lock=false -var "mongo_uri=${{ secrets.MONGO_URI }}"
 
       - name: Install kubectl
