@@ -312,7 +312,7 @@ module "dns" {
   version = "2.2.2"
 
   parent_dns_zone_id   = aws_route53_zone.example_com_zone.zone_id
-  parent_dns_zone_name = "argocd.com"
+  parent_dns_zone_name = "arrgocd.com"
   subdomain            = "argo"
 }
 
