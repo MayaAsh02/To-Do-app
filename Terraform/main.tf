@@ -59,8 +59,6 @@ module "eks" {
     kube-proxy = {
       version = "latest"
       most_recent = true
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
     }
     vpc-cni = {
       version = "latest"
