@@ -20,8 +20,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Set KUBERNETES_MASTER environment variable
-        run: echo "KUBERNETES_MASTER=$KUBECONFIG" >> $GITHUB_ENV
+      - name: Set KUBECONFIG
+        run: |
+            echo "$HOME/.kube/config" >> $GITHUB_ENV        
   
       - name: Provision EKS cluster
         run: |
