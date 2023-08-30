@@ -14,7 +14,8 @@ module "vpc" {
 
   azs             = slice(data.aws_availability_zones.azs.names, 0, var.num_of_azs)
   private_subnets = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, i)]
-  public_subnets  = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 5 + i)]
+  public_subnets  = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 5 + i) ]
+  map_public_ip_on_launch = true
   intra_subnets   = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 10 + i)]
 
   enable_nat_gateway = true
@@ -97,8 +98,6 @@ module "eks" {
     ami_type       = "AL2_x86_64"
     instance_types = ["t3.medium"]
     iam_role_attach_cni_policy = true
-
-
   }
   
   eks_managed_node_groups = {
@@ -132,7 +131,6 @@ module "eks" {
       ami_type = "AL2_ARM_64"
       ami_id = data.aws_ami.eks_default_arm.image_id
       enable_bootstrap_user_data = true
-      associate_public_ip_address = true
       instance_types = ["t4g.medium"]
     }
 
