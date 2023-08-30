@@ -312,7 +312,7 @@ module "dns" {
   version = "2.2.2"
 
   parent_dns_zone_id   = aws_route53_zone.example_com_zone.zone_id
-  parent_dns_zone_name = "arrgocd.com"
+  parent_dns_zone_name = "argocd.com"
   subdomain            = "argo"
 }
 
@@ -321,11 +321,16 @@ resource "helm_release" "argocd" {
   name       = "argocd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
-  namespace  = "argocd"
+  namespace  = "argocd2"
   create_namespace = true
 
   set {
     name  = "server.service.type"
     value = "LoadBalancer"
+  }
+
+  set {
+    name  = "cluster.enabled"
+    value = "true"
   }
 }
