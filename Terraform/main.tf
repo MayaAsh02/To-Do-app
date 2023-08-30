@@ -319,10 +319,10 @@ module "dns" {
 
 //install argocd on the cluster
 resource "helm_release" "argocd" {
-  name       = "argocd"
+  name       = "argocd2"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
-  namespace  = "argocd"
+  namespace  = "argocd2"
   create_namespace = true
 
   set {
