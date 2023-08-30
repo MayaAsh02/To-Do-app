@@ -17,6 +17,8 @@ module "vpc" {
   public_subnets  = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 5 + i) ]
   intra_subnets   = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 10 + i)]
 
+  map_public_ip_on_launch = true
+
   enable_nat_gateway = true
   enable_vpn_gateway = true
   enable_dns_hostnames = true
@@ -68,7 +70,7 @@ module "eks" {
   }
 
   vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets
+  subnet_ids               = module.vpc.public_subnets
   control_plane_subnet_ids = module.vpc.intra_subnets
 
   manage_aws_auth_configmap = true
@@ -315,15 +317,4 @@ module "dns" {
 }
 
 //install argocd on the cluster
-resource "helm_release" "argocd" {
-  name       = "argocd"
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argo-cd"
-  namespace  = "argocd"
-  create_namespace = true
 
-  set {
-    name  = "server.service.type"
-    value = "LoadBalancer"
-  }
-}
