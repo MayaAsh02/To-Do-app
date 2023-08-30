@@ -40,8 +40,13 @@ jobs:
           aws eks update-kubeconfig --name ToDo-app-dev-eks
 
 
-      - name: Create metallb-system namespace
-        run: kubectl create namespace metallb-system
+      - name: Create metallb-system namespace if not exists
+        run: |
+          if ! kubectl get namespace metallb-system > /dev/null 2>&1; then
+              kubectl create namespace metallb-system
+            else
+              echo "Namespace metallb-system already exists. Skipping creation."
+            fi
         
       - name: Deploy Helm Chart
         run: |
