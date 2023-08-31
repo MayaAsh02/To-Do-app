@@ -4,7 +4,6 @@ locals {
   region          = "us-east-1"
   tags            = merge(var.tags, { project = var.project_name, clusterName = local.name, environment = var.environment })
 }
-
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -14,15 +13,16 @@ module "vpc" {
 
   azs             = slice(data.aws_availability_zones.azs.names, 0, var.num_of_azs)
   private_subnets = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, i)]
-  map_public_ip_on_launch = true
-  public_subnets  = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 5 + i) ]
+  public_subnets  = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 5 + i)]
   intra_subnets   = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 10 + i)]
 
   enable_nat_gateway = true
-  enable_vpn_gateway = true
-  ##enable_dns_hostnames = true
-  ##enable_dns_support   = true
+  enable_vpn_gateway = false
   single_nat_gateway = true
+
+  # enable_dns_support   = true#
+  # enable_dns_hostnames = true#
+
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
@@ -38,6 +38,7 @@ module "vpc" {
     Environment = var.environment
   }
 }
+
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -74,12 +75,6 @@ module "eks" {
   eks_managed_node_group_defaults = {
     ami_type       = "AL2_x86_64"
     instance_types = ["t3.medium"]
-
-    # We are using the IRSA created below for permissions
-    # However, we have to deploy with the policy attached FIRST (when creating a fresh cluster)
-    # and then turn this off after the cluster/node group is created. Without this initial policy,
-    # the VPC CNI fails to assign IPs and nodes cannot join the cluster
-    # See https://github.com/aws/containers-roadmap/issues/1666 for more context
     iam_role_attach_cni_policy = true
   }
 
@@ -245,12 +240,14 @@ module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.0"
 
+  count = var.create_eks_cluster ? 1 : 0
+
   role_name_prefix      = "VPC-CNI-IRSA"
   attach_vpc_cni_policy = true
 
   oidc_providers = {
     main = {
-      provider_arn               = module.eks.oidc_provider_arn
+      provider_arn               = module.eks[0].oidc_provider_arn
       namespace_service_accounts = ["kube-system:aws-node"]
     }
   }
@@ -287,7 +284,6 @@ data "aws_ami" "eks_default_bottlerocket" {
     values = ["bottlerocket-aws-k8s-${local.cluster_version}-x86_64-*"]
   }
 }
-
 resource "aws_iam_policy" "node_additional" {
   name        = "${local.name}-additional"
   description = "Example usage of node additional policy"
@@ -304,16 +300,6 @@ resource "aws_iam_policy" "node_additional" {
       },
     ]
   })
-
-  tags = local.tags
-}
-
-module "key_pair" {
-  source  = "terraform-aws-modules/key-pair/aws"
-  version = "~> 2.0"
-
-  key_name_prefix    = local.name
-  create_private_key = true
 
   tags = local.tags
 }
