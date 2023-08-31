@@ -318,26 +318,24 @@ module "key_pair" {
   tags = local.tags
 }
 
-resource "aws_security_group" "remote_access" {
-  name_prefix = "${local.name}-remote-access"
-  description = "Allow remote SSH access"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_route53_zone" "example_com_zone" {
+  name = "argocd.com"
+}
 
-  ingress {
-    description = "SSH access"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
-  }
+resource "aws_route53_record" "argocd_record" {
+  zone_id = aws_route53_zone.example_com_zone.zone_id
+  name    = "eks-argocd"
+  type    = "CNAME"
+  ttl     = "300"  # TTL value in seconds
 
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+  records = [local.name]  # Replace with your EKS cluster's domain name
+}
 
-  tags = merge(local.tags, { Name = "${local.name}-remote" })
+module "dns" {
+  source = "terraform-module/dns/aws"
+  version = "2.2.2"
+
+  parent_dns_zone_id   = aws_route53_zone.example_com_zone.zone_id
+  parent_dns_zone_name = "argocd.com"
+  subdomain            = "argo"
 }
