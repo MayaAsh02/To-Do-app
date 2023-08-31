@@ -1,7 +1,7 @@
 locals {
   name            = "${var.project_name}-${var.environment}-eks"
   cluster_version = "1.27"
-  region          = "eu-west-1"
+  region          = "us-east-1"
   tags            = merge(var.tags, { project = var.project_name, clusterName = local.name, environment = var.environment })
 }
 
