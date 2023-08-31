@@ -35,7 +35,7 @@ provider "aws" {
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+  token                  = try(data.aws_eks_cluster_auth.cluster.token)
     exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
@@ -47,7 +47,7 @@ provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
+    token                  = try(data.aws_eks_cluster_auth.cluster.token)
     exec {
       api_version = "client.authentication.k8s.io/v1"
       command = "aws"
@@ -61,11 +61,10 @@ provider "helm" {
   }
 }
 
-provider "argocd" {
-  server_addr = "argocd:443"
-  username    = "username"
-  password    = "password"
-  grpc_web    = true
+data "aws_eks_cluster_auth" "cluster" {
+  count      = var.create_eks_cluster ? 1 : 0
+  name       = module.eks[0].cluster_name
+  depends_on = [module.eks[0].cluster_arn]
 }
 
 data "aws_eks_cluster" "cluster" {
