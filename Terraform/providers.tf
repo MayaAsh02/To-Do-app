@@ -61,7 +61,7 @@ provider "helm" {
   }
 }
 
-data "aws_eks_cluster_auth" "cluster" {
+data "aws_eks_cluster_auth" "clusterr" {
   count      = var.create_eks_cluster ? 1 : 0
   name       = module.eks[0].cluster_name
   depends_on = [module.eks[0].cluster_arn]
