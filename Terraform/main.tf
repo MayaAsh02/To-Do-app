@@ -5,20 +5,6 @@ locals {
   tags            = merge(var.tags, { project = var.project_name, clusterName = local.name, environment = var.environment })
 }
 
-resource "aws_route_table" "public_rt" {
-  vpc_id = module.vpc.vpc_id
-
-  route {
-    cidr_block = "0.0.0.0/0"  # All IP addresses
-  }
-}
-
-resource "aws_route_table_association" "public_subnet_associations" {
-  count          = length(module.vpc.public_subnets)
-  subnet_id      = module.vpc.public_subnets[count.index]
-  route_table_id = aws_route_table.public_rt.id
-}
-
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
