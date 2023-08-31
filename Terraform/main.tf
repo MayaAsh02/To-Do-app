@@ -5,6 +5,25 @@ locals {
   tags            = merge(var.tags, { project = var.project_name, clusterName = local.name, environment = var.environment })
 }
 
+resource "aws_internet_gateway" "my_igw" {
+  vpc_id = module.vpc.vpc_id
+}
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = module.vpc.vpc_id
+
+  route {
+    cidr_block = "0.0.0.0/0"  # All IP addresses
+    gateway_id = aws_internet_gateway.my_igw.id
+  }
+}
+
+resource "aws_route_table_association" "public_subnet_associations" {
+  count          = length(module.vpc.public_subnets)
+  subnet_id      = module.vpc.public_subnets[count.index]
+  route_table_id = aws_route_table.public_rt.id
+}
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -14,10 +33,9 @@ module "vpc" {
 
   azs             = slice(data.aws_availability_zones.azs.names, 0, var.num_of_azs)
   private_subnets = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, i)]
+  map_public_ip_on_launch = true
   public_subnets  = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 5 + i) ]
   intra_subnets   = [for i in range(var.num_of_azs) : cidrsubnet(var.vpc_cidr, 6, 10 + i)]
-
-  map_public_ip_on_launch = true
 
   enable_nat_gateway = true
   enable_vpn_gateway = true
