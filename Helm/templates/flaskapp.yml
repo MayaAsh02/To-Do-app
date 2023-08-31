@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.flaskapp.name }}
-          image: {{ .Values.flaskapp.image.registry }}/{{ .Values.flaskapp.image.repository }}:{{ .Values.flaskapp.image.tag }}
+          image: {{ .Values.flaskapp.image.repository }}:{{ .Values.flaskapp.image.tag }}
           ports:
             - containerPort: 5000
           env:
