@@ -29,3 +29,9 @@ variable "tags" {
     Terraform = "true"
   }
 }
+
+variable "create_eks_cluster" {
+  description = "Create EKS cluster or not"
+  default     = true
+  type        = bool
+}
