@@ -12,16 +12,11 @@ mongo:
     port: 27017
   statefulset:
     replicas: 1
+  volumeClaimTemplates:
+    accessModes: [ "ReadWriteOnce" ]
     resources:
       requests:
         storage: 20Gi
-    volumeClaimTemplates:
-      name: mongodb-data
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: standard
-      resources:
-        requests:
-          storage: 20Gi
 
 flaskapp:
   name: flaskapp

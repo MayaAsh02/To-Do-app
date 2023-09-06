@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.mongo.name }}-statefulset
+  name: {{ .Release.Name }}-mongo
 spec:
-  replicas: {{ .Values.mongo.statefulset.replicas }}
   selector:
     matchLabels:
       app: mongodb
-  serviceName: {{ .Values.mongo.name }}-mongodb-headless
+  replicas: {{ .Values.mongo.statefulset.replicas }}
+  serviceName: {{ .Release.Name }}-mongodb-headless
   template:
     metadata:
       labels:
@@ -15,21 +15,22 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: {{ .Values.mongo.image.repository }}:{{ .Values.mongo.image.tag }}
+          image: "{{ .Values.mongo.image.registry }}/{{ .Values.mongo.image.repository }}:{{ .Values.mongo.image.tag }}"
+          imagePullPolicy: {{ .Values.mongo.imagePullPolicy }}
           ports:
-            - containerPort: 27017
+            - containerPort: {{ .Values.mongo.service.port }}
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
-      volumeClaimTemplates:
-        - metadata:
-            name: mongodb-data
-          spec:
-            accessModes: [ "ReadWriteOnce" ]
-            storageClassName: {{ .Values.mongo.volumeClaimTemplates.storageClassName }}
-            resources:
-              requests:
-                storage: {{ .Values.mongo.volumeClaimTemplates.resources.requests.storage }}
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-data
+      spec:
+        accessModes: [ "{{ .Values.mongo.volumeClaimTemplates.accessModes }}" ]
+        resources:
+          requests:
+            storage: "{{ .Values.mongo.volumeClaimTemplates.resources.requests.storage }}"
+
 ---
 apiVersion: v1
 kind: Service

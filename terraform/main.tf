@@ -290,6 +290,7 @@ data "aws_ami" "eks_default_bottlerocket" {
     values = ["bottlerocket-aws-k8s-${local.cluster_version}-x86_64-*"]
   }
 }
+
 resource "aws_iam_policy" "node_additional" {
   name        = "${local.name}-additional"
   description = "Example usage of node additional policy"
