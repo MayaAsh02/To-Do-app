@@ -1,13 +1,12 @@
+name: ci
 
-'''name: ci
-
-  on:
-    workflow_dispatch:
-    push:
+on:
+  workflow_dispatch:
+  push:
       branches:
         - "main"
 
-  jobs:
+jobs:
     build:
       runs-on: ubuntu-latest
       steps:
@@ -46,6 +45,6 @@
             context: ./server
             file: ./server/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/app:latest'''
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/app:latest
 
           
