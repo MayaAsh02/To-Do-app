@@ -1,5 +1,4 @@
 nameOverride: ""
-
 mongo:
   name: mongo
   image:
@@ -13,11 +12,10 @@ mongo:
   statefulset:
     replicas: 1
   volumeClaimTemplates:
-    accessModes: [ "ReadWriteOnce" ]
+    accessModes: ["ReadWriteOnce"]
     resources:
       requests:
         storage: 20Gi
-
 flaskapp:
   name: flaskapp
   env: production
@@ -31,22 +29,22 @@ flaskapp:
     port: 80
     targetPort: 5000
     type: LoadBalancer
-
 ingress:
   host: todo-app.local
-
 secrets:
-    name: mongo-atlas-secret
-    type: Opaque
-    data:
-      atlas-connection-string: files/.env
-
+  name: mongo-atlas-secret
+  type: Opaque
+  data:
+    atlas-connection-string: files/.env
 configMaps:
-    name: metallb-config
-    data:
-      config: |
-        address-pools:
-        - name: default
-          protocol: layer2
-          addresses:
-          - 192.168.99.200-192.168.99.220
+  name: metallb-config
+  data:
+    config: |-
+      address-pools:
+      - name: default
+        protocol: layer2
+        addresses:
+        - 192.168.99.200-192.168.99.220
+app:
+  image:
+    tag: main-46ad5c2
