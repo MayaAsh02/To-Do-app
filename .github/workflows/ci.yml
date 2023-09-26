@@ -1,4 +1,4 @@
-name: Flask App test
+name: CI-pipeline
 
 on:
   push:

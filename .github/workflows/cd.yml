@@ -1,4 +1,4 @@
-name: Deploy EKS App
+name: CD-pipeline
 
 on:
   push:
